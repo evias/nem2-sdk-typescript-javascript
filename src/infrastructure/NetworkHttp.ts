@@ -55,9 +55,15 @@ export class NetworkHttp extends Http implements NetworkRepository {
                 const networkTypeDTO = response.body;
                 if (networkTypeDTO.name === 'mijinTest') {
                     return NetworkType.MIJIN_TEST;
-                } else {
-                    throw new Error('network ' + networkTypeDTO.name + ' is not supported yet by the sdk');
                 }
+                else if (networkTypeDTO.name === 'mijin') {
+                    return NetworkType.MIJIN;
+                }
+                else if (networkTypeDTO.name === 'publicTest') {
+                    return NetworkType.TEST_NET;
+                }
+
+                return NetworkType.MAIN_NET;
             }),
             catchError((error) =>  throwError(this.errorHandling(error))),
         );
