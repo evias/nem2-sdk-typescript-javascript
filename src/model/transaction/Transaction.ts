@@ -169,9 +169,11 @@ export abstract class Transaction {
         entityHashBytes.set(generationHash, generationHashIdx);
         entityHashBytes.set(transactionBody, transactionBodyIdx);
 
-        // 6) create SHA3 hash of transaction data
-        // Note: Transaction hashing *always* uses SHA3
-        SHA3Hasher.func(entityHash, entityHashBytes, 32, SignSchema.SHA3);
+        // 6) create SHA3 or keccak hash of transaction data
+        // Note: networks MIJIN & MIJIN_TEST use SHA3
+        // Note: networks TEST_NET & MAIN_NET use Keccak
+        const signSchema = SHA3Hasher.resolveSignSchema(networkType);
+        SHA3Hasher.func(entityHash, entityHashBytes, 32, signSchema);
         return Convert.uint8ToHex(entityHash);
     }
 

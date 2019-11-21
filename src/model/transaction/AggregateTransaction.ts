@@ -373,9 +373,11 @@ export class AggregateTransaction extends Transaction {
      * @returns {Uint8Array}
      */
     private calculateInnerTransactionHash(networkType: NetworkType): Uint8Array {
-        // Note: Transaction hashing *always* uses SHA3
-        const hasher  = SHA3Hasher.createHasher(32, SignSchema.SHA3);
-        const builder = new MerkleHashBuilder(32, SignSchema.SHA3);
+        // Note: networks MIJIN & MIJIN_TEST use SHA3
+        // Note: networks TEST_NET & MAIN_NET use Keccak
+        const schema  = SHA3Hasher.resolveSignSchema(networkType);
+        const hasher  = SHA3Hasher.createHasher(32, schema);
+        const builder = new MerkleHashBuilder(32, schema);
         this.innerTransactions.forEach((transaction) => {
             const entityHash: Uint8Array = new Uint8Array(32);
 

@@ -329,6 +329,22 @@ describe('Transaction', () => {
             expect(hash1).to.not.equal(hash2);
         });
 
+        it ('create different hash given different signature schemas', () => {
+            const hash1 = Transaction.createTransactionHash(
+                knownPayload,
+                generationHashBytes,
+                NetworkType.MIJIN_TEST, // SHA3
+            );
+
+            const hash2 = Transaction.createTransactionHash(
+                knownPayload,
+                generationHashBytes,
+                NetworkType.TEST_NET, // KECCAK
+            );
+
+            expect(hash1).to.not.equal(hash2);
+        });
+
         it ('create same hash given same payloads', () => {
             const hash1 = Transaction.createTransactionHash(
                 knownPayload,
@@ -358,6 +374,22 @@ describe('Transaction', () => {
 
             expect(hash1).to.equal(knownHash_sha3);
             expect(hash2).to.equal(knownHash_sha3);
+        });
+
+        it('create correct KECCAK transaction hash given network type MAIN_NET or TEST_NET', () => {
+            const hash1 = Transaction.createTransactionHash(
+                knownPayload,
+                generationHashBytes,
+                NetworkType.TEST_NET,
+            );
+            const hash2 = Transaction.createTransactionHash(
+                knownPayload,
+                generationHashBytes,
+                NetworkType.MAIN_NET,
+            );
+
+            expect(hash1).to.equal(knownHash_keccak);
+            expect(hash2).to.equal(knownHash_keccak);
         });
 
         it('hash only merkle transaction hash for aggregate transactions', () => {
